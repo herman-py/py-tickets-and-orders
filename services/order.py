@@ -13,11 +13,11 @@ def create_order(
 ) -> Order:
     user = get_user_model().objects.get(username=username)
 
-    order = Order.objects.create(user=user)
-
-    if date:
-        Order.objects.filter(pk=order.pk).update(created_at=date)
-        order.refresh_from_db()
+    order = (
+        Order.objects.create(user=user, created_at=date)
+        if date
+        else Order.objects.create(user=user)
+    )
 
     for ticket_data in tickets:
         Ticket.objects.create(
